@@ -107,7 +107,7 @@ const Login = () => {
         <Typography variant="body1">
           Don't have an account?{" "}
           <Link
-            href="#"
+            href="/signup"
             underline="none"
             sx={{ color: "#3897f0", fontWeight: "bold" }}
           >
