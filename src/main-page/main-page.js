@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { 
-  AppBar, Toolbar, Typography, Box, Avatar, IconButton, Grid2, Paper, Button, 
-  Dialog, DialogActions, DialogContent, DialogTitle, TextField, Snackbar 
-} from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Avatar, IconButton, Grid2, Paper, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Snackbar } from "@mui/material";
 import { AddBox, FavoriteBorder, AccountCircle, Share, Comment } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { feedData } from "./post-data";
@@ -17,9 +14,8 @@ const InstagramClone = () => {
     content: "",
     comments: [{ username: "", comment: "" }],
   });
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Share Snackbar
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar Message
-  const [feed, setFeed] = useState(feedData);
+  const [openSnackbar, setOpenSnackbar] = useState(false);  // Snackbar visibility for share
+  const [openCommentSnackbar, setOpenCommentSnackbar] = useState(false);  // Snackbar visibility for comment
 
   const handleLike = (index) => {
     const updatedLikes = [...likes];
@@ -38,55 +34,28 @@ const InstagramClone = () => {
     }));
   };
 
-  const handleAddPost = async () => {
-    try {
-      const response = await fetch("/add_post", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: newPost.title,
-          content: newPost.content,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add post");
-      }
-
-      const result = await response.json();
-      const newId = feed.length + 1;
-      const newPostData = { 
-        id: newId, 
-        title: newPost.title, 
-        content: newPost.content, 
-        comments: [{ username: "", comment: "" }], 
-        likes: 0, 
-        image: "/postimages/default.png" 
-      };
-      
-      setFeed((prevFeed) => [...prevFeed, newPostData]);
-      setSnackbarMessage("Post added successfully!");
-    } catch (error) {
-      setSnackbarMessage("Error adding post. Please try again.");
-    } finally {
-      setOpenSnackbar(true);
-      setNewPost({ title: "", content: "", comments: [{ username: "", comment: "" }] });
-      setOpenModal(false);
-    }
+  const handleAddPost = () => {
+    const newId = feedData.length + 1;
+    const newPostData = { ...newPost, id: newId, likes: 0, image: "/postimages/default.png" };
+    feedData.push(newPostData);
+    setNewPost({ title: "", content: "", comments: [{ username: "", comment: "" }] });
+    setOpenModal(false);
   };
 
   const handleShare = () => {
-    setSnackbarMessage("Post has been shared!");
-    setOpenSnackbar(true);
+    setOpenSnackbar(true);  // Show the notification for share
   };
 
-  const handleCloseSnackbar = () => setOpenSnackbar(false);
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);  // Hide the share notification
+  };
 
   const handleComment = () => {
-    setSnackbarMessage("Comment has been added!");
-    setOpenSnackbar(true);
+    setOpenCommentSnackbar(true);  // Show the notification for comment
+  };
+
+  const handleCloseCommentSnackbar = () => {
+    setOpenCommentSnackbar(false);  // Hide the comment notification
   };
 
   return (
@@ -95,8 +64,20 @@ const InstagramClone = () => {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Typography variant="h6" sx={{ color: "#262626", fontWeight: "bold" }}>Instagram</Typography>
           <Box>
-            <Button variant="contained" color="primary" onClick={() => navigate("/scratch-card")}>Scratch Card</Button>
-            <Button variant="contained" color="primary" onClick={() => navigate("/bookings-page")}>Events</Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "black", marginRight: 2 }}
+              onClick={() => navigate("/scratch-card")}
+            >
+              Scratch Card
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "black" }}
+              onClick={() => navigate("/bookings-page")}
+            >
+              Events
+            </Button>
             <IconButton onClick={handleOpenModal}><AddBox sx={{ color: "#262626" }} /></IconButton>
             <IconButton><AccountCircle sx={{ color: "#262626" }} onClick={() => navigate("/about")} /></IconButton>
           </Box>
@@ -108,7 +89,7 @@ const InstagramClone = () => {
       </Box>
 
       <Grid2 container spacing={2}>
-        {feed.map((post, index) => (
+        {feedData.map((post, index) => (
           <Grid2 item xs={12} sm={6} md={4} key={post.id}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6">{post.title}</Typography>
@@ -155,6 +136,11 @@ const InstagramClone = () => {
         <DialogContent>
           <TextField label="Title" variant="outlined" fullWidth name="title" value={newPost.title} onChange={handleInputChange} sx={{ mb: 2 }} />
           <TextField label="Content" variant="outlined" fullWidth name="content" value={newPost.content} onChange={handleInputChange} sx={{ mb: 2 }} />
+          <TextField label="Comment (optional)" variant="outlined" fullWidth name="comment" value={newPost.comments[0].comment} onChange={(e) => {
+            const newComments = [...newPost.comments];
+            newComments[0].comment = e.target.value;
+            setNewPost({ ...newPost, comments: newComments });
+          }} sx={{ mb: 2 }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">Cancel</Button>
@@ -162,11 +148,20 @@ const InstagramClone = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Snackbar for Share notification */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message={snackbarMessage}
+        message="Post has been shared!"
+      />
+
+      {/* Snackbar for Comment notification */}
+      <Snackbar
+        open={openCommentSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseCommentSnackbar}
+        message="Comment has been added!"
       />
     </Box>
   );
