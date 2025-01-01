@@ -32,7 +32,7 @@ const AboutAccount = () => {
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Typography variant="h6" sx={{ color: "#262626", fontWeight: "bold" }}>
-            Instagram
+            DevX
           </Typography>
           <Box>
             <Button

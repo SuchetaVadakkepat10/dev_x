@@ -16,7 +16,7 @@ const Stories = () => {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`, 
           },
         });
-        console.log(localStorage.getItem("authToken"));
+        console.log("ACCESS TOKEN:",localStorage.getItem("authToken"));
         setUsers(response.data); // Set users to state
         setLoading(false); // Set loading to false after data is fetched
       } catch (err) {
