@@ -7,6 +7,7 @@ import InstagramClone from './main-page/main-page';
 import Login from './login-page/login-page';
 import ScratchCard from './scratch-page/scratch-page';
 import SignUp from './sign-up-page/sign-up';
+import BookingPage from './bookings-page/booking-page.js';
 
 
 //------------------------------------------------------------------------------------------
@@ -16,6 +17,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/main" element={<InstagramClone/>} />
       <Route path="/scratch-card" element={<ScratchCard/>} />
+      <Route path="/bookings-page" element={<BookingPage/>} />
       <Route path="/signup" element={<SignUp/>} />
     </Routes>
 
