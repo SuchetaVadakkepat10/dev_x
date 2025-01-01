@@ -37,7 +37,11 @@ const AboutAccount = () => {
           <Box>
             <Button
               variant="contained"
-              color="primary"
+              sx={{
+                backgroundColor: "black", // Change the button color to black
+                color: "#fff", // Set the text color to white for contrast
+                marginRight: 2, // Add margin for spacing between buttons
+              }}
               onClick={() => navigate("/scratch-card")}
             >
               Open Scratch Card
