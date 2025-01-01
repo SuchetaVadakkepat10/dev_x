@@ -16,9 +16,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<SignUp/>} />
-      <Route path="/about" element={<ProtectedRoute> <AboutAccount/> </ProtectedRoute>} />
+      <Route path="/about" element={<AboutAccount/>} />
       <Route path="/main" element={<ProtectedRoute> <InstagramClone/></ProtectedRoute>} />
-
 
     </Routes>
 
