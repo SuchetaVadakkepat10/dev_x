@@ -26,8 +26,12 @@ const InstagramClone = () => {
             Instagram
           </Typography>
           <Box>
+             
             <Button variant="contained" color="primary" onClick={() => navigate("/scratch-card")}>
-              Open Scratch Card
+             Scratch Card
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => navigate("/bookings-page")}>
+              Events
             </Button>
             <IconButton>
               <Home sx={{ color: "#262626" }} />
