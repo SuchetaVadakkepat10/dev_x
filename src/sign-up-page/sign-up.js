@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Paper, Link, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";  // We will use axios for the HTTP request
+import axios from "axios"; // For HTTP requests
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [instagram_id, setInstagramId] = useState("");
   const [password, setPassword] = useState("");
+  const [referral, setReferral] = useState(""); 
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
@@ -16,13 +17,13 @@ const SignUp = () => {
 
       // Make a POST request to the backend
       const response = await axios.post("http://localhost:5000/signup", {
-        email: email,
-        instagram_id: instagram_id,
-        password: password,
-      });
+        email,
+        instagram_id,
+        password
+        });
 
       if (response.status === 201) {
-        console.log("User Signed Up:", { email, instagram_id });        
+        console.log("User Signed Up:", { email, instagram_id, referral });
         navigate("/main");
       }
     } catch (error) {
@@ -102,8 +103,17 @@ const SignUp = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            />
-        <Button
+          />
+          <TextField
+            label="Referral Code (Optional)" // Label for the referral field
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={referral}
+            onChange={(e) => setReferral(e.target.value)}
+          />
+
+          <Button
             variant="contained"
             fullWidth
             onClick={handleSubmit}
