@@ -1,33 +1,55 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Paper, Link, Divider } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Link,
+  Divider,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // For HTTP requests
+import axios from "axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [instagram_id, setInstagramId] = useState("");
   const [password, setPassword] = useState("");
-  const [referral, setReferral] = useState(""); 
+  const [referral, setReferral] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showReferralToast, setShowReferralToast] = useState(false); // Snackbar state
 
   const handleSubmit = async () => {
     try {
       setErrorMessage("");
 
-      // Make a POST request to the backend
+      // Simulate a backend call
       const response = await axios.post("http://localhost:5000/signup", {
         email,
         instagram_id,
-        password
-        });
+        password,
+      });
 
       if (response.status === 201) {
         console.log("User Signed Up:", { email, instagram_id, referral });
-        navigate("/main");
+
+        // Show referral toast if a referral code is entered
+        if (referral) {
+          setShowReferralToast(true);
+
+          // Wait for 3 seconds before navigating
+          setTimeout(() => {
+            navigate("/main");
+          }, 2000);
+        } else {
+          // Navigate directly if no referral code
+          navigate("/main");
+        }
       }
     } catch (error) {
-      // Handle errors, e.g., if the user already exists
       if (error.response) {
         setErrorMessage(error.response.data.message);
       } else {
@@ -105,7 +127,7 @@ const SignUp = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <TextField
-            label="Referral Code (Optional)" // Label for the referral field
+            label="Referral Code (Optional)"
             variant="outlined"
             fullWidth
             margin="normal"
@@ -162,6 +184,21 @@ const SignUp = () => {
           </Link>
         </Typography>
       </Paper>
+
+      {/* Snackbar for referral code acceptance */}
+      <Snackbar
+        open={showReferralToast}
+        autoHideDuration={3000}
+        onClose={() => setShowReferralToast(false)}
+      >
+        <Alert
+          onClose={() => setShowReferralToast(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Referral code accepted!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
