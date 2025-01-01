@@ -64,8 +64,20 @@ const InstagramClone = () => {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Typography variant="h6" sx={{ color: "#262626", fontWeight: "bold" }}>Instagram</Typography>
           <Box>
-            <Button variant="contained" color="primary" onClick={() => navigate("/scratch-card")}>Scratch Card</Button>
-            <Button variant="contained" color="primary" onClick={() => navigate("/bookings-page")}>Events</Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "black", marginRight: 2 }}
+              onClick={() => navigate("/scratch-card")}
+            >
+              Scratch Card
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "black" }}
+              onClick={() => navigate("/bookings-page")}
+            >
+              Events
+            </Button>
             <IconButton onClick={handleOpenModal}><AddBox sx={{ color: "#262626" }} /></IconButton>
             <IconButton><AccountCircle sx={{ color: "#262626" }} onClick={() => navigate("/about")} /></IconButton>
           </Box>
