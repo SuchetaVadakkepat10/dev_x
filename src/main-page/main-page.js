@@ -1,20 +1,49 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Box, Avatar, IconButton, Grid2, Paper, Button } from "@mui/material";
-import { Home, Search, AddBox, FavoriteBorder, AccountCircle } from "@mui/icons-material";
+import { AppBar, Toolbar, Typography, Box, Avatar, IconButton, Grid2, Paper, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { AddBox, FavoriteBorder, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { feedData } from "./post-data";
+import Stories from "./stories";
 
 const InstagramClone = () => {
   const navigate = useNavigate();
 
-  // To manage the like state for each post
   const [likes, setLikes] = useState(feedData.map(() => false)); // Initially, no post is liked
+  const [openModal, setOpenModal] = useState(false); // Modal state
+  const [newPost, setNewPost] = useState({
+    title: "",
+    content: "",
+    comments: [{ username: "", comment: "" }],
+  }); // New post data
 
-  // Toggle the like state for a specific post
   const handleLike = (index) => {
     const updatedLikes = [...likes];
     updatedLikes[index] = !updatedLikes[index]; // Toggle like state
     setLikes(updatedLikes);
+  };
+
+  // Open modal
+  const handleOpenModal = () => setOpenModal(true);
+
+  // Close modal
+  const handleCloseModal = () => setOpenModal(false);
+
+  // Handle input change for new post
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPost((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission to add new post
+  const handleAddPost = () => {
+    const newId = feedData.length + 1; // Generate new ID (you can improve this)
+    const newPostData = { ...newPost, id: newId, likes: 0 }; // Add ID and set initial likes to 0
+    feedData.push(newPostData); // Add new post to feedData (you should ideally update the state here)
+    setNewPost({ title: "", content: "", comments: [{ username: "", comment: "" }] }); // Reset newPost data
+    setOpenModal(false); // Close modal
   };
 
   return (
@@ -29,35 +58,19 @@ const InstagramClone = () => {
             <Button variant="contained" color="primary" onClick={() => navigate("/scratch-card")}>
               Open Scratch Card
             </Button>
-            <IconButton>
-              <Home sx={{ color: "#262626" }} />
-            </IconButton>
-            <IconButton>
-              <Search sx={{ color: "#262626" }} />
-            </IconButton>
-            <IconButton>
+            <IconButton onClick={handleOpenModal}>
               <AddBox sx={{ color: "#262626" }} />
             </IconButton>
             <IconButton>
-              <FavoriteBorder sx={{ color: "#262626" }} />
-            </IconButton>
-            <IconButton>
-              <AccountCircle sx={{ color: "#262626" }} />
+              <AccountCircle sx={{ color: "#262626" }} onClick={() => navigate("/about")} />
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
 
       {/* Stories Section */}
-      <Box sx={{ display: "flex", overflowX: "auto", p: 2, gap: 2, backgroundColor: "#fff", borderBottom: "1px solid #dbdbdb" }}>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <Box key={index} sx={{ textAlign: "center", minWidth: 70 }}>
-            <Avatar sx={{ width: 56, height: 56, mx: "auto", border: "2px solid #ff8501" }} />
-            <Typography variant="caption" sx={{ mt: 1 }}>
-              User {index + 1}
-            </Typography>
-          </Box>
-        ))}
+      <Box sx={{ display: "flex", overflowX: "auto", p: 2, gap: 2, backgroundColor: "#fff" }}>
+        <Stories />
       </Box>
 
       {/* Feed Section */}
@@ -82,14 +95,13 @@ const InstagramClone = () => {
 
               <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
                 <IconButton onClick={() => handleLike(index)}>
-                  {/* Change the icon color based on whether the post is liked */}
                   {likes[index] ? (
                     <FavoriteBorder sx={{ color: "#e60023" }} />
                   ) : (
                     <FavoriteBorder sx={{ color: "#262626" }} />
                   )}
                   <Typography variant="body2" sx={{ mt: 1 }}>
-                    {likes[index] ? post.likes + 1 : post.likes} {/* Display the updated like count */}
+                    {likes[index] ? post.likes + 1 : post.likes}
                   </Typography>
                 </IconButton>
               </Box>
@@ -112,15 +124,56 @@ const InstagramClone = () => {
                   </Box>
                 ))}
               </Box>
-
-              {/* Button to interact */}
-              <Button sx={{ mt: 2 }} variant="contained" size="small">
-                Interact
-              </Button>
             </Paper>
           </Grid2>
         ))}
       </Grid2>
+
+      {/* Modal for Adding New Post */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Add New Post</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Title"
+            variant="outlined"
+            fullWidth
+            name="title"
+            value={newPost.title}
+            onChange={handleInputChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Content"
+            variant="outlined"
+            fullWidth
+            name="content"
+            value={newPost.content}
+            onChange={handleInputChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Comment (optional)"
+            variant="outlined"
+            fullWidth
+            name="comment"
+            value={newPost.comments[0].comment}
+            onChange={(e) => {
+              const newComments = [...newPost.comments];
+              newComments[0].comment = e.target.value;
+              setNewPost({ ...newPost, comments: newComments });
+            }}
+            sx={{ mb: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddPost} color="primary">
+            Add Post
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

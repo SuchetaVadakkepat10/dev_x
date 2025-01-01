@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -7,14 +7,38 @@ import {
   Paper,
   Link,
   Divider,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    navigate("/main");
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/signin", {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        localStorage.setItem("authToken", response.data.access_token);
+        console.log(response.data);
+
+        navigate("/main");
+      }
+    } catch (error) {
+      // Handle errors (e.g., invalid credentials, server issues)
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   return (
@@ -51,13 +75,20 @@ const Login = () => {
           Instagram
         </Typography>
 
-        {/* Login Form */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
         <Box component="form" sx={{ mt: 2 }}>
           <TextField
             label="Username or email"
             variant="outlined"
             fullWidth
             margin="normal"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             label="Password"
@@ -65,6 +96,8 @@ const Login = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button
             variant="contained"
@@ -94,7 +127,6 @@ const Login = () => {
         </Link>
       </Paper>
 
-      {/* Signup Link */}
       <Paper
         elevation={3}
         sx={{
