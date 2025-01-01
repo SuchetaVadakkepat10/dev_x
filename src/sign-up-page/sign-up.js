@@ -12,7 +12,6 @@ const SignUp = () => {
 
   const handleSubmit = async () => {
     try {
-      // Clear any previous error messages
       setErrorMessage("");
 
       // Make a POST request to the backend
@@ -22,9 +21,8 @@ const SignUp = () => {
         password: password,
       });
 
-      // If the signup is successful, navigate to the main page
       if (response.status === 201) {
-        console.log("User Signed Up:", { email, instagram_id });
+        console.log("User Signed Up:", { email, instagram_id });        
         navigate("/main");
       }
     } catch (error) {
