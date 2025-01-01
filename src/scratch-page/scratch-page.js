@@ -1,3 +1,5 @@
+//line   17 variable having the scratch card value
+
 import React, { useState, useRef, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 
@@ -11,9 +13,16 @@ const ScratchCard = () => {
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
 
-    // Randomize reward points between 20 and 100
-    const randomPoints = Math.floor(Math.random() * (100 - 20 + 1)) + 20;
+    // Randomize reward points between 20 and 100    // Randomize reward points between 20 and 100
+
+    const randomPoints = Math.floor(Math.random() * (70 - 20 + 1)) + 20;
     rewardTextRef.current.textContent = `You have Won ${randomPoints} KYN Points`;
+
+
+
+    // Randomize reward points between 20 and 100    // Randomize reward points between 20 and 100
+    
+
 
     canvas.width = rect.width;
     canvas.height = rect.height;
