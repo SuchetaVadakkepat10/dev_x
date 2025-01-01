@@ -92,7 +92,7 @@ const InstagramClone = () => {
       </Box>
 
       <Grid2 container spacing={2}>
-        {feed.map((post, index) => (
+        {feedData.map((post, index) => (
           <Grid2 item xs={12} sm={6} md={4} key={post.id}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6">{post.title}</Typography>
